@@ -28,7 +28,7 @@
 import volatility.plugins.common as common 
 import volatility.plugins.dumpfiles as dumpfiles
 import volatility.debug as debug
-import hashlib, json, urllib, urllib2, time, requests, io, httplib, mimetypes
+import hashlib, json, urllib, urllib2, time, io, httplib, mimetypes
 
 #--------------------------------------------------------------------------------
 # Constants
