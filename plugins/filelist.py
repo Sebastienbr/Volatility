@@ -28,6 +28,8 @@
 import volatility.plugins.common as common 
 import volatility.plugins.dumpfiles as dumpfiles
 
+from volatility.renderers import TreeGrid
+from volatility.renderers.basic import Address
 
 class FileList(dumpfiles.DumpFiles):
     """List memory mapped files and cached files """
@@ -52,4 +54,27 @@ class FileList(dumpfiles.DumpFiles):
 					present = "No"
 			self.table_row(outfd, "{0:#010x}".format(summaryinfo['fobj']), summaryinfo['pid'], present, summaryinfo['type'], summaryinfo['name'])	
 			
-		
+    def unified_output(self, data):
+        return TreeGrid([("Offset", Address),
+                       ("PID", int),
+                       ("Present", str),
+                       ("Type", str),
+                       ("File Name", str)],
+                        self.generator(data))	
+    
+						
+    def generator(self, data):
+        for summaryinfo in data:
+            present = "Yes"
+            if summaryinfo['type'] == "SharedCacheMap":
+                if (len(summaryinfo['vacbary']) == 0):
+                    present = "No"				
+            else:
+                if (len(summaryinfo['present']) == 0):
+                    present = "No"
+
+            yield (0, [Address(summaryinfo['fobj']),
+                       int(summaryinfo['pid']),
+                       str(present),
+                       str(summaryinfo['type']),
+                       str(summaryinfo['name'])])		
